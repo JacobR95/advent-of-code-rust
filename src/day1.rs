@@ -74,6 +74,36 @@ pub fn day1() -> u32 {
     return elve_calories[leader_index];
 }
 
+// Now find the top 3 elves with the most calories and return the sum of all of 3 of them?
+pub fn day1_part2() -> u32 {
+    let data = fs::read_to_string("data/day1.txt").unwrap();
+
+    let mut current_elf_calories = 0;
+    let mut top3: Vec<u32> = vec![0, 0, 0];
+
+    data.lines().for_each(|line| {
+
+        if !line.is_empty() {
+            let calory: u32 = line.parse().expect("Failed to parse string");
+            current_elf_calories += calory;
+            return;
+        }
+
+        let mut hold = current_elf_calories;
+        for i in 0..top3.len() {
+            if top3[i] < hold {
+                let buf = top3[i];
+                top3[i] = hold;
+                hold = buf;
+            }
+        }
+
+        current_elf_calories = 0;
+    });
+
+    return top3.iter().sum();
+}
+
 #[cfg(test)]
 mod day1_tests {
     use super::*;
@@ -81,6 +111,12 @@ mod day1_tests {
     #[test]
     fn should_return_expected_amount() {
         let result = day1();
-        assert_eq!(result, 200);
+        assert_eq!(result, 74198);
+    }
+
+    #[test]
+    fn should_return_expected_amount_part2() {
+        let result = day1_part2();
+        assert_eq!(result, 209914)
     }
 }

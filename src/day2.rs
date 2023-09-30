@@ -101,16 +101,19 @@ pub fn day2() -> u32 {
 // "Anyway, the second column says how the round needs to end:
 // X means you need to lose, Y means you need to end the round in a draw, and Z means you need to win. Good luck!"
 //
-// The total score is still calculated in the same way, but now you need to figure out what shape to choose so the round ends as indicated.
+// The total score is still calculated in the same way,
+// but now you need to figure out what shape to choose so the round ends as indicated.
 // The example above now goes like this:
 //
-// In the first round, your opponent will choose Rock (A), and you need the round to end in a draw (Y), so you also choose Rock.
+// In the first round, your opponent will choose Rock (A),
+// and you need the round to end in a draw (Y), so you also choose Rock.
 // This gives you a score of 1 + 3 = 4.
 // In the second round, your opponent will choose Paper (B), and you choose Rock so you lose (X) with a score of 1 + 0 = 1.
 // In the third round, you will defeat your opponent's Scissors with Rock for a score of 1 + 6 = 7.
 // Now that you're correctly decrypting the ultra top secret strategy guide, you would get a total score of 12.
 //
-// Following the Elf's instructions for the second column, what would your total score be if everything goes exactly according to your strategy guide?
+// Following the Elf's instructions for the second column,
+// what would your total score be if everything goes exactly according to your strategy guide?
 pub fn day2_part2() -> u32 {
 
     let data = fs::read_to_string("data/day2.txt").unwrap();
@@ -123,7 +126,46 @@ pub fn day2_part2() -> u32 {
             return;
         }
 
-        //  TODO
+        let inputs: Vec<&str> = line.split(" ").collect();
+        let them = inputs[0];
+        let result = inputs[1];
+
+        total_score += match result {
+            "X" => 0, // Loose
+            "Y" => 3, // Win
+            "Z" => 6, // Draw
+            _ => panic!("Invalid Input")
+        };
+
+        // Loose
+        if result == "X" {
+            total_score += match them {
+                "A" => 3,
+                "B" => 1,
+                "C" => 2,
+                _ => panic!("Invalid Input")
+            };
+        }
+
+        // Draw
+        if result == "Y" {
+            total_score += match them {
+                "A" => 1,
+                "B" => 2,
+                "C" => 3,
+                _ => panic!("Invalid Input")
+            };
+        }
+
+        // Win
+        if result == "Z" {
+            total_score += match them {
+                "A" => 2,
+                "B" => 3,
+                "C" => 1,
+                _ => panic!("Invalid Input")
+            };
+        }
     });
 
     return total_score;
@@ -141,7 +183,7 @@ mod day2_tests {
 
     #[test]
     fn should_return_expected_amount_for_part_2() {
-        let result = day2();
-        assert_eq!(result, 11841);
+        let result = day2_part2();
+        assert_eq!(result, 13022);
     }
 }

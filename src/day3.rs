@@ -10,7 +10,8 @@ use std::{collections::HashMap, fs};
 //
 // The Elves have made a list of all of the items currently in each rucksack (your puzzle input),
 // but they need your help finding the errors.
-// Every item type is identified by a single lowercase or uppercase letter (that is, a and A refer to different types of items).
+// Every item type is identified by a single lowercase or uppercase letter
+// (that is, a and A refer to different types of items).
 //
 // The list of items for each rucksack is given as characters all on a single line.
 // A given rucksack always has the same number of items in each of its two compartments, so the first half of the characters represent items in the first compartment,
@@ -57,20 +58,18 @@ pub fn day3() -> u32 {
             panic!("Line is not even");
         }
 
-        let mut seen = HashMap::new();
+        let middle_index = (line.len() / 2);
+        let (bag1, bag2) = line.split_at(middle_index);
+        let mut duplicate_items = HashMap::new();
 
-        println!("{}", line);
-        for i in 0..line.len() {
-            let item = line.get(i..i+1).unwrap();
-            println!("{}", item);
-
-            if i >= line.len() / 2 && seen.get(item).is_some() {
-                total += letter_number_map.get(item).unwrap();
+        for item in bag2.chars() {
+            if bag1.contains(item) {
+                duplicate_items.insert(item, true);
             }
+        }
 
-            if i < line.len() / 2 {
-                seen.insert(item, true);
-            }
+        for duplicate_item in duplicate_items.keys() {
+            total += letter_number_map.get(duplicate_item).unwrap();
         }
     });
 
@@ -111,7 +110,7 @@ mod day3_tests {
     #[test]
     fn should_return_expected_amount() {
         let result = day3();
-        assert_eq!(result, 11841);
+        assert_eq!(result, 8139);
     }
 
     #[test]

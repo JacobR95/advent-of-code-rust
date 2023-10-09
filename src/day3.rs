@@ -1,5 +1,4 @@
 use std::{collections::HashMap, fs};
-use std::collections::HashSet;
 
 // --- Day 3: Rucksack Reorganization ---
 // One Elf has the important job of loading all of the rucksacks with supplies for the jungle journey.
@@ -59,7 +58,7 @@ pub fn day3() -> u32 {
             panic!("Line is not even");
         }
 
-        let middle_index = (line.len() / 2);
+        let middle_index = line.len() / 2;
         let (bag1, bag2) = line.split_at(middle_index);
         let mut duplicate_items = HashMap::new();
 

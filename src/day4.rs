@@ -114,8 +114,8 @@ pub fn day4_part2() -> u32 {
             None => panic!("Failed to get right values")
         };
 
-        if left_start <= right_start && left_end >= right_end ||
-            right_start <= left_start && right_end >= left_end {
+        if left_end >= right_start && left_end <= right_end ||
+            right_end >= left_start && right_end <= left_end {
             total += 1;
         }
     });
@@ -136,6 +136,6 @@ mod day4_tests {
     #[test]
     fn should_return_expected_amount_for_part_2() {
         let result = day4_part2();
-        assert_eq!(result, 2668);
+        assert_eq!(result, 872);
     }
 }

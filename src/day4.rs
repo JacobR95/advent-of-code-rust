@@ -1,4 +1,4 @@
-use std::{fs};
+use std::fs;
 
 // --- Day 4: Camp Cleanup ---
 // Space needs to be cleared before the last supplies can be unloaded from the

@@ -22,12 +22,9 @@ pub fn day5(data: String) -> String {
         }
     }
 
-    let mut result = String::new();
-
-    stacks.iter()
-        .for_each(|stack| result.push(stack[0].chars().nth(0).unwrap()));
-
-    return result;
+    return stacks.iter()
+        .map(|stack| stack[0].chars().nth(0).unwrap())
+        .collect();
 }
 
 // --- Part Two ---
@@ -36,21 +33,16 @@ pub fn day5_part2(data: String) -> String {
     let mut stacks = get_stacks_from(&data);
     let moves = get_moves_from(&data);
 
-    for value in moves {
-        let (amount, from, to) = value;
-
-        for _ in 0..amount {
-            let value = stacks[from-1].remove(0);
-            stacks[to-1].insert(0, value);
+    for (amount, from, to) in moves {
+        let moved_crates: Vec<_> = stacks[from-1].drain(0..amount).collect();
+        for c in moved_crates.iter().rev() {
+            stacks[to-1].insert(0, c.to_string());
         }
     }
 
-    let mut result = String::new();
-
-    stacks.iter()
-        .for_each(|stack| result.push(stack[0].chars().nth(0).unwrap()));
-
-    return result;
+    return stacks.iter()
+        .map(|stack| stack[0].chars().nth(0).unwrap())
+        .collect();
 }
 
 pub fn get_stacks_from<'a>(crates: &'a str) -> Vec<Vec<String>> {
@@ -137,7 +129,6 @@ mod day5_tests {
     #[test]
     fn should_return_expected_amount_for_part_2_with_example() {
         let data = String::from(DAY5_TEST_DATA);
-
         let result = day5_part2(data);
         assert_eq!(result, "MCD");
     }
@@ -146,7 +137,7 @@ mod day5_tests {
     fn should_return_expected_amount_for_part_2_with_input_data() {
         let data = fs::read_to_string("data/day5.txt").unwrap();
         let result = day5_part2(data);
-        assert_eq!(result, "CMZ");
+        assert_eq!(result, "QLFQDBBHM");
     }
 }
 

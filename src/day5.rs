@@ -1,6 +1,4 @@
-use std::{fs, ops::Index};
-
-pub const DAY5_TEST_DATA: &str = "[D]
+pub const DAY5_TEST_DATA: &str = "    [D]
 [N] [C]
 [Z] [M] [P]
  1   2   3
@@ -10,43 +8,85 @@ move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2";
 
-pub fn day5(data: String) -> &'static str {
+pub fn day5(data: String) -> String {
 
-    let result = get_stacks_from(&data);
-    // data.lines().for_each(|line| {
+    let mut stacks = get_stacks_from(&data);
+    let moves = get_moves_from(&data);
 
-    // });
+    for value in moves {
+        let (amount, from, to) = value;
 
-    return "CMZ";
-}
-
-// --- Part Two ---
-pub fn day5_part2(data: String) -> &'static str {
-
-    // data.lines().for_each(|line| {
-    // });
-
-    return "CMZ";
-}
-
-pub fn get_stacks_from<'a>(crates: &'a str) -> Vec<Vec<&'a str>> {
-    let mut result = Vec::new();
-
-    for line in crates.lines() {
-        if !line.starts_with("[") {
-            break;
+        for _ in 0..amount {
+            let value = stacks[from-1].remove(0);
+            stacks[to-1].insert(0, value);
         }
-
-        let trimmed_line = line.trim_matches(|c: char| c == '[' || c == ']');
-        let row = trimmed_line.split_whitespace().collect::<Vec<&'a str>>();
-        result.push(row);
     }
+
+    let mut result = String::new();
+
+    stacks.iter()
+        .for_each(|stack| result.push(stack[0].chars().nth(0).unwrap()));
 
     return result;
 }
 
-pub fn get_moves_from(data: String) -> Vec<(u16, u16, u16)> {
-    let mut moves: Vec<(u16, u16, u16)> = vec![];
+// --- Part Two ---
+pub fn day5_part2(data: String) -> String {
+
+    let mut stacks = get_stacks_from(&data);
+    let moves = get_moves_from(&data);
+
+    for value in moves {
+        let (amount, from, to) = value;
+
+        for _ in 0..amount {
+            let value = stacks[from-1].remove(0);
+            stacks[to-1].insert(0, value);
+        }
+    }
+
+    let mut result = String::new();
+
+    stacks.iter()
+        .for_each(|stack| result.push(stack[0].chars().nth(0).unwrap()));
+
+    return result;
+}
+
+pub fn get_stacks_from<'a>(crates: &'a str) -> Vec<Vec<String>> {
+
+    let total_stacks = crates
+        .lines()
+        .find(|line| line.starts_with(" 1"))
+        .unwrap()
+        .replace(" ", "")
+        .len();
+
+    let mut stacks = vec![vec![];total_stacks];
+
+    for line in crates.lines() {
+        if line.starts_with(" 1") {
+            break;
+        }
+
+        for stack in 0..total_stacks {
+            let index = (stack*4)+1;
+            match line.chars().nth(index) {
+                Some(c) => {
+                    if c != ' ' {
+                        stacks[stack].push(c.to_string())
+                    }
+                },
+                None => {}
+            };
+        }
+    }
+
+    return stacks;
+}
+
+pub fn get_moves_from(data: &str) -> Vec<(usize, usize, usize)> {
+    let mut moves: Vec<(usize, usize, usize)> = vec![];
 
     let empty_line_index = data
         .lines()
@@ -64,9 +104,9 @@ pub fn get_moves_from(data: String) -> Vec<(u16, u16, u16)> {
         let numbers: Vec<&str> = trimmed_line.split(",").collect();
 
         moves.push((
-            numbers[0].parse::<u16>().unwrap(),
-            numbers[1].parse::<u16>().unwrap(),
-            numbers[2].parse::<u16>().unwrap(),
+            numbers[0].parse::<usize>().unwrap(),
+            numbers[1].parse::<usize>().unwrap(),
+            numbers[2].parse::<usize>().unwrap(),
         ));
     }
 
@@ -75,6 +115,8 @@ pub fn get_moves_from(data: String) -> Vec<(u16, u16, u16)> {
 
 #[cfg(test)]
 mod day5_tests {
+    use std::fs;
+
     use super::*;
 
     #[test]
@@ -89,7 +131,7 @@ mod day5_tests {
     fn should_return_expected_result_with_input_data() {
         let data = fs::read_to_string("data/day5.txt").unwrap();
         let result = day5(data);
-        assert_eq!(result, "CMZ");
+        assert_eq!(result, "GRTSWNJHH");
     }
 
     #[test]
@@ -97,7 +139,7 @@ mod day5_tests {
         let data = String::from(DAY5_TEST_DATA);
 
         let result = day5_part2(data);
-        assert_eq!(result, "CMZ");
+        assert_eq!(result, "MCD");
     }
 
     #[test]
@@ -115,14 +157,28 @@ mod day5_utils_tests {
     #[test]
     fn should_return_correct_moves() {
         let data = String::from(DAY5_TEST_DATA);
-        let expected: Vec<(u16, u16, u16)> = vec![
+        let expected: Vec<(usize, usize, usize)> = vec![
             (1, 2, 1),
             (3, 1, 3),
             (2, 2, 1),
             (1, 1, 2),
         ];
 
-        let actual = get_moves_from(data);
+        let actual = get_moves_from(&data);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn should_return_correct_stacks() {
+        let data = String::from(DAY5_TEST_DATA);
+        let expected = vec![
+            vec!["N", "Z"],
+            vec!["D", "C", "M"],
+            vec!["P"],
+        ];
+
+        let actual = get_stacks_from(&data);
 
         assert_eq!(actual, expected);
     }

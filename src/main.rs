@@ -18,6 +18,5 @@ fn main() {
     println!("day4_part2: {}", day4::day4_part2());
     println!("day5: {}", day5::day5(DAY5_TEST_DATA.to_string()));
     println!("day5_part2: {}", day5::day5_part2(DAY5_TEST_DATA.to_string()));
-    println!("day6: {}", day6::day6(""));
-    println!("day6_part2: {}", day6::day6_part(""));
+    println!("day6: {}", day6::day6("", 0));
  }
